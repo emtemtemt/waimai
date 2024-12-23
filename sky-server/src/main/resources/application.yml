@@ -21,6 +21,14 @@ mybatis:
     #开启驼峰命名
     map-underscore-to-camel-case: true
 
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 控制台输出sql语句
+    map-underscore-to-camel-case: true # #开启驼峰命名转换
+
+
+
 logging:
   level:
     com:
@@ -34,6 +42,6 @@ sky:
     # 设置jwt签名加密时使用的秘钥
     admin-secret-key: itcast
     # 设置jwt过期时间
-    admin-ttl: 7200000
+    admin-ttl: 720000000
     # 设置前端传递过来的令牌名称
     admin-token-name: token

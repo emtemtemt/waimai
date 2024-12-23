@@ -7,7 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@ApiModel(description = "员工登录时传递的数据模型")
+@ApiModel(description = "员工登录时传递的数据模型") //API 生成接口文档的注解
 public class EmployeeLoginDTO implements Serializable {
 
     @ApiModelProperty("用户名")
