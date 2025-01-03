@@ -105,12 +105,19 @@
             <version>3.5.5</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.17.4</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.baomidou</groupId>-->
 <!--            <artifactId>mybatis-plus-jsqlparser</artifactId>-->
 <!--            <version>3.5.5</version> &lt;!&ndash; 确保版本和 MyBatis Plus 主包一致 &ndash;&gt;-->
 <!--        </dependency>-->
 
+<!--        配置redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>

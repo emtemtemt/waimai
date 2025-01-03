@@ -80,12 +80,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         emp.setStatus(StatusConstant.ENABLE);
         // PasswordConstant.DEFAULT_PASSWORD = 123456
         emp.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes(StandardCharsets.UTF_8))); //加密
-        emp.setCreateTime(LocalDateTime.now());
-        emp.setUpdateTime(LocalDateTime.now());
-        //TODO
-        //设置用户ID
-        emp.setCreateUser(ThreadContext.getCurrentId());
-        emp.setUpdateUser(ThreadContext.getCurrentId());
+//        emp.setCreateTime(LocalDateTime.now());
+//        emp.setUpdateTime(LocalDateTime.now());
+//        //TODO
+//        //设置用户ID
+//        emp.setCreateUser(ThreadContext.getCurrentId());
+//        emp.setUpdateUser(ThreadContext.getCurrentId());
 
         //调用sql
         employeeMapper.insert(emp);
@@ -133,8 +133,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee emp = new Employee(); //实例化所需的类
         BeanUtils.copyProperties(employeeDTO,emp);
 
-        emp.setUpdateTime(LocalDateTime.now());
-        emp.setUpdateUser(ThreadContext.getCurrentId());
+//        emp.setUpdateTime(LocalDateTime.now());
+//        emp.setUpdateUser(ThreadContext.getCurrentId());
         employeeMapper.updateById(emp);
     }
 
