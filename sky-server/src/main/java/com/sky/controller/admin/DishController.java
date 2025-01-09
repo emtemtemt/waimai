@@ -11,9 +11,11 @@ import com.sky.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/admin/dish")
@@ -21,10 +23,17 @@ import java.util.List;
 public class DishController {
     @Autowired
     private DishService dishService;
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @PostMapping
     @ApiOperation("新增菜品")
     public Result add(@RequestBody DishDTO dishDTO){
         dishService.add(dishDTO);
+        //增删改时删除对应的缓存
+        String key = "dish_"+dishDTO.getCategoryId();
+        redisTemplate.delete(key);
+
         return Result.success();
 
     }
@@ -43,6 +52,11 @@ public class DishController {
     @ApiOperation("删除菜品") //@RequestParam 在url中的?后面添加参数即可使用
     public Result del(@RequestParam List<Long> ids){
         dishService.del(ids);
+
+        //获取全部key进行删除
+        Set keys = redisTemplate.keys("dish_*");
+
+        redisTemplate.delete(keys);
         return Result.success();
     }
 
@@ -58,6 +72,11 @@ public class DishController {
     @ApiOperation("修改菜品")
     public Result updateDish(@RequestBody DishDTO dishDTO){
         dishService.updateDish(dishDTO);
+
+        //获取全部key进行删除
+        Set keys = redisTemplate.keys("dish_*");
+
+            redisTemplate.delete(keys);
         return Result.success();
     }
 
@@ -72,6 +91,10 @@ public class DishController {
     @ApiOperation("菜品起售、停售")
     public Result status(@PathVariable  Integer status, Long id){
         dishService.status(status,id);
+        //获取全部key进行删除
+        Set keys = redisTemplate.keys("dish_*");
+
+        redisTemplate.delete(keys);
         return Result.success();
     }
 
