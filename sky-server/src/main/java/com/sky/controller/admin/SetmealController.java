@@ -55,7 +55,7 @@ public class SetmealController {
     }
     @PutMapping
     @ApiOperation("修改套餐")
-    @CacheEvict(cacheNames = "setmealCache",allEntries = true) //删除全部缓存
+    @CacheEvict(cacheNames = "setmealCache",allEntries = true) //删除全部的缓存
     public Result<SetmealVO> update(@RequestBody SetmealDTO setmealDTO){
         setmealService.update(setmealDTO);
         return Result.success();
