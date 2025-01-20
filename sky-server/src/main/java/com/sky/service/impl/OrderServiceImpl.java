@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -21,6 +22,8 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
+import com.sky.websocket.WebSocketTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +53,9 @@ public class OrderServiceImpl implements OrderService {
     private WeChatPayUtil weChatPayUtil;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private WebSocketServer webSocketServer;
+
 
     @Override
     public OrderSubmitVO submit(OrdersSubmitDTO ordersSubmitDTO) {
@@ -183,6 +190,16 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(orders);
+
+        //推送消息
+        HashMap hashMap = new HashMap();
+        hashMap.put("type",1); //1表示下单成功  2 表示催单
+        hashMap.put("orderId",ordersDB.getId());
+        hashMap.put("content","订单号为"+outTradeNo);
+
+        String jsonString = JSON.toJSONString(hashMap);
+        webSocketServer.sendToAllClient(jsonString);
+
     }
 
     @Override
@@ -462,6 +479,23 @@ public class OrderServiceImpl implements OrderService {
         orders.setDeliveryTime(LocalDateTime.now());
 
         orderMapper.update(orders);
+    }
+
+    @Override
+    public void reminder(Long id) {
+        // 根据id查询订单
+        Orders ordersDB = orderMapper.selectById(id);
+
+        // 校验订单是否存在，并且状态为4
+        if (ordersDB == null ) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        HashMap hashMap = new HashMap();
+        hashMap.put("type",2);
+        hashMap.put("orderId",ordersDB.getId());
+        hashMap.put("content","订单号为"+ordersDB.getNumber());
+        String jsonString = JSON.toJSONString(hashMap);
+        webSocketServer.sendToAllClient(jsonString);
     }
 
 
