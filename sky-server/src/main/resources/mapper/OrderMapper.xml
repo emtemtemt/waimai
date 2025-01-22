@@ -34,4 +34,19 @@
         where id = #{id}
     </update>
 
+
+    <select id="getTop10" resultType="com.sky.dto.GoodsSalesDTO">
+        SELECT od.name,SUM(od.number) number FROM order_detail od,orders o
+        WHERE od.order_id = o.id AND o.status = 5
+        <if test="begin !=null">
+            AND o.order_time &gt; #{begin}
+        </if>
+        <if test="end !=null">
+            AND o.order_time &lt; #{end}
+        </if>
+        GROUP BY od.name
+        ORDER BY NUMBER DESC
+        LIMIT 0,10
+    </select>
+
 </mapper>
